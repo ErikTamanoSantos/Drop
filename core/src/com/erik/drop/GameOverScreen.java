@@ -5,13 +5,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class MainMenuScreen implements Screen {
+public class GameOverScreen implements Screen {
 
     final Drop game;
 
     OrthographicCamera camera;
 
-    public MainMenuScreen(final Drop game) {
+    public GameOverScreen(final Drop game) {
         this.game = game;
 
         camera = new OrthographicCamera();
@@ -31,8 +31,8 @@ public class MainMenuScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
-        game.font.draw(game.batch, "Welcome to Drop!!! ", 100, 150);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
+        game.font.draw(game.batch, "Game Over!!! ", 100, 150);
+        game.font.draw(game.batch, "Tap anywhere to play again!", 100, 100);
         game.batch.end();
 
         if (Gdx.input.isTouched()) {
