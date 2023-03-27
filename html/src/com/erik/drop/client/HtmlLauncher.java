@@ -3,7 +3,6 @@ package com.erik.drop.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.erik.drop.DropGame;
 
 public class HtmlLauncher extends GwtApplication {
         @Override

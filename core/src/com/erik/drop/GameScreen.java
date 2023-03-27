@@ -29,8 +29,11 @@ public class GameScreen implements Screen {
     long lastDropTime;
     int dropsGathered;
 
+    boolean running;
+
     public GameScreen(final Drop game) {
         this.game = game;
+        running = true;
 
         // load the images for the droplet and the bucket, 64x64 pixels each
         dropImage = new Texture(Gdx.files.internal("droplet.png"));
@@ -93,42 +96,45 @@ public class GameScreen implements Screen {
             game.batch.draw(dropImage, raindrop.x, raindrop.y);
         }
         game.batch.end();
+        if (running) {
+            // process user input
+            if (Gdx.input.isTouched()) {
+                Vector3 touchPos = new Vector3();
+                touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+                camera.unproject(touchPos);
+                bucket.x = touchPos.x - 64 / 2;
+            }
+            if (Gdx.input.isKeyPressed(Keys.LEFT))
+                bucket.x -= 200 * Gdx.graphics.getDeltaTime();
+            if (Gdx.input.isKeyPressed(Keys.RIGHT))
+                bucket.x += 200 * Gdx.graphics.getDeltaTime();
 
-        // process user input
-        if (Gdx.input.isTouched()) {
-            Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-            bucket.x = touchPos.x - 64 / 2;
-        }
-        if (Gdx.input.isKeyPressed(Keys.LEFT))
-            bucket.x -= 200 * Gdx.graphics.getDeltaTime();
-        if (Gdx.input.isKeyPressed(Keys.RIGHT))
-            bucket.x += 200 * Gdx.graphics.getDeltaTime();
+            // make sure the bucket stays within the screen bounds
+            if (bucket.x < 0)
+                bucket.x = 0;
+            if (bucket.x > 800 - 64)
+                bucket.x = 800 - 64;
 
-        // make sure the bucket stays within the screen bounds
-        if (bucket.x < 0)
-            bucket.x = 0;
-        if (bucket.x > 800 - 64)
-            bucket.x = 800 - 64;
+            // check if we need to create a new raindrop
+            if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
+                spawnRaindrop();
 
-        // check if we need to create a new raindrop
-        if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
-            spawnRaindrop();
-
-        // move the raindrops, remove any that are beneath the bottom edge of
-        // the screen or that hit the bucket. In the later case we increase the
-        // value our drops counter and add a sound effect.
-        Iterator<Rectangle> iter = raindrops.iterator();
-        while (iter.hasNext()) {
-            Rectangle raindrop = iter.next();
-            raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
-            if (raindrop.y + 64 < 0)
-                iter.remove();
-            if (raindrop.overlaps(bucket)) {
-                dropsGathered++;
-                dropSound.play();
-                iter.remove();
+            // move the raindrops, remove any that are beneath the bottom edge of
+            // the screen or that hit the bucket. In the later case we increase the
+            // value our drops counter and add a sound effect.
+            Iterator<Rectangle> iter = raindrops.iterator();
+            while (iter.hasNext()) {
+                Rectangle raindrop = iter.next();
+                raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
+                if (raindrop.y + 64 < 0){
+                    iter.remove();
+                    running = false;
+                }
+                if (raindrop.overlaps(bucket)) {
+                    dropsGathered++;
+                    dropSound.play();
+                    iter.remove();
+                }
             }
         }
     }
