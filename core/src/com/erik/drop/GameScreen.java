@@ -25,6 +25,7 @@ public class GameScreen implements Screen {
     Texture bucketImage;
     Texture backImage;
     Sound dropSound;
+    Music gameOverSound;
     Music rainMusic;
     OrthographicCamera camera;
     Rectangle bucket;
@@ -45,6 +46,7 @@ public class GameScreen implements Screen {
 
         // load the drop sound effect and the rain background "music"
         dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+        gameOverSound = Gdx.audio.newMusic(Gdx.files.internal("gameOver.mp3"));
         rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
         rainMusic.setLooping(true);
 
@@ -133,9 +135,12 @@ public class GameScreen implements Screen {
             raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
             if (raindrop.y + 64 < 0){
                 iter.remove();
+                rainMusic.stop();
+                gameOverSound.play();
                 game.setScreen(new GameOverScreen(game));
             }
-            if (raindrop.overlaps(bucket)) {
+            if ((raindrop.y > bucket.y + bucket.height - 5) && (raindrop.y < bucket.y + bucket.height) &&
+                (raindrop.x > bucket.x - bucket.width / 2) && (raindrop.x < bucket.x + bucket.width / 2)) {
                 dropsGathered++;
                 dropSound.play();
                 iter.remove();
