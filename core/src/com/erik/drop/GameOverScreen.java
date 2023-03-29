@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class GameOverScreen implements Screen {
 
     final Drop game;
+    static int score;
 
     OrthographicCamera camera;
 
@@ -34,7 +35,8 @@ public class GameOverScreen implements Screen {
         game.batch.begin();
         game.font.setColor(Color.WHITE);
         game.font.draw(game.batch, "Game Over!!! ", 100, 150);
-        game.font.draw(game.batch, "Tap anywhere to play again!", 100, 100);
+        game.font.draw(game.batch, "Score: " + score, 100, 125);
+        game.font.draw(game.batch, "Tap anywhere to play again", 100, 100);
         game.batch.end();
 
         if (Gdx.input.isTouched()) {

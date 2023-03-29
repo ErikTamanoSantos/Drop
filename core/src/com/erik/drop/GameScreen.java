@@ -137,6 +137,7 @@ public class GameScreen implements Screen {
                 iter.remove();
                 rainMusic.stop();
                 gameOverSound.play();
+                GameOverScreen.score = dropsGathered;
                 game.setScreen(new GameOverScreen(game));
             }
             if ((raindrop.y > bucket.y + bucket.height - 5) && (raindrop.y < bucket.y + bucket.height) &&
