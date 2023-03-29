@@ -4,12 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameOverScreen implements Screen {
 
     final Drop game;
     static int score;
+
+    Texture backImage;
 
     OrthographicCamera camera;
 
@@ -18,6 +21,7 @@ public class GameOverScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
+        backImage = new Texture(Gdx.files.internal("gameOver_background.jpg"));
     }
 
     @Override
@@ -33,6 +37,7 @@ public class GameOverScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
+        game.batch.draw(backImage, 0, 0, 800, 480 );
         game.font.setColor(Color.WHITE);
         game.font.draw(game.batch, "Game Over!!! ", 100, 150);
         game.font.draw(game.batch, "Score: " + score, 100, 125);
